@@ -1,0 +1,16 @@
+{
+  "name": "reminder-app",
+  "version": "0.0.1",
+  "description": "A Quasar Project",
+  "author": "Tijn <99891906+tijnndev@users.noreply.github.com>",
+  "private": true,
+  "dependencies": {
+    "@aparajita/capacitor-logger": "^5.0.0",
+    "@capacitor/android": "^6.2.0",
+    "@capacitor/app": "^6.0.2",
+    "@capacitor/cli": "^6.0.0",
+    "@capacitor/core": "^6.2.0",
+    "@capacitor/local-notifications": "^6.0.0",
+    "@capacitor/storage": "^1.2.5"
+  }
+}
