@@ -4,7 +4,7 @@ A reminder and notification application built with **Quasar Framework**, **Vue 3
 
 ## Features
 
-✅ Create, update, and delete reminders  
+✅ Create, Mark as solved and delete reminders  
 ✅ Store reminders using **Capacitor Storage**  
 ✅ Local notifications on **mobile (Android)**  
 ✅ Desktop notifications using **Notification API**  
