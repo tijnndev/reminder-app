@@ -39,8 +39,8 @@ export class MemStorage implements IStorage {
     if (storedReminders.value) {
       const parsedReminders: Reminder[] = JSON.parse(storedReminders.value);
       parsedReminders.forEach(reminder => {
-        this.reminders.set(reminder.id, reminder);
-        scheduleReminder(reminder);
+        if(!this.reminders.get(reminder.id)) this.reminders.set(reminder.id, reminder);
+        if(!jobs.get(reminder.id)) scheduleReminder(reminder);
       });
       this.currentId = parsedReminders.length > 0 ? Math.max(...parsedReminders.map(r => r.id)) + 1 : 1;
     }
@@ -114,7 +114,7 @@ function scheduleReminder(reminder: Reminder) {
 
   const job = schedule.scheduleJob(rule, async () => {
     console.log(`[${new Date().toISOString()}] Reminder triggered: ${reminder.title}`);
-    await sendNotification(reminder.title, reminder.description || 'Reminder due!');
+    await sendNotification(reminder.title, reminder.description || 'Reminder due!', reminder.id);
   });
   if (job) {
     jobs.set(reminder.id, job);
@@ -139,9 +139,10 @@ export async function fetchReminders() {
   }
 }
 
-export function createReminder(newReminder: Omit<Reminder, 'id' | 'completed'>) {
+export function createReminder(newReminder: Omit<Reminder, 'completed'>) {
   try {
-    return storage.createReminder(newReminder);
+    const reminder = storage.createReminder(newReminder);
+    return reminder
   } catch (error) {
     console.error('[Error]', error);
     return { message: "Invalid reminder data" };

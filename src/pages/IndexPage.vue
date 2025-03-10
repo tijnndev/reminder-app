@@ -57,11 +57,13 @@
           </q-card-section>
 
           <q-card-section>
-            <q-form @submit="onSubmit">
+            <q-form ref="formRef" @submit="onSubmit">
+
               <q-input
                 v-model="form.title"
                 label="Title"
-                :rules="[val => !!val || 'Title is required']"
+                placeholder="test"
+                :rules="[requiredRule]"
               />
 
               <q-input
@@ -118,8 +120,12 @@ interface Reminder {
 const $q = useQuasar();
 const reminders = ref<Reminder[]>([]);
 const submitting = ref(false);
+const formRef = ref();
+
+const requiredRule = (val: string) => val ? true : "This field is required";
 
 const form = ref({
+  id: 0,
   title: '',
   description: '',
   dueDate: format(new Date(), "yyyy-MM-dd'T'HH:mm"),
@@ -141,6 +147,12 @@ async function fetchRemindersFront() {
 
 async function onSubmit() {
   if (submitting.value) return;
+
+  const formEl = formRef.value;
+  if (formEl) {
+    const isValid = await formEl.validate();
+    if (!isValid) return;
+  }
   
   submitting.value = true;
   try {
@@ -149,12 +161,11 @@ async function onSubmit() {
     if (!response) throw new Error('Failed to create reminder');
     
     await fetchRemindersFront();
-    form.value = {
-      title: '',
-      description: '',
-      dueDate: format(new Date(), "yyyy-MM-dd'T'HH:mm"),
-      frequency: 'once'
-    };
+    form.value.title = '';
+    form.value.description = '';
+    form.value.dueDate = format(new Date(), "yyyy-MM-dd'T'HH:mm");
+    form.value.frequency = 'once';
+    if (formEl) formEl.resetValidation();
   } catch (error) {
     console.log(error)
   } finally {

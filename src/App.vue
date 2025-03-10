@@ -6,8 +6,10 @@
 import { onMounted } from 'vue';
 import { Capacitor } from '@capacitor/core';
 import { LocalNotifications } from '@capacitor/local-notifications';
+import logger from './utils/logger';
 
 async function requestNotificationPermissions() {
+  logger.info("Requesting perms")
   if (Capacitor.isNativePlatform()) {
     const { display } = await LocalNotifications.requestPermissions();
     if (display !== 'granted') {
